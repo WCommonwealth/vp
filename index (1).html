@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080406">
+<title>VP — Vlad Popescu</title>
+<meta name="description" content="Vlad Popescu (VP). Personal site, projects and contact.">
+<style>
+  :root{
+    --bg:#080406;
+    --card:rgba(255,255,255,.05);
+    --stroke:rgba(255,255,255,.11);
+    --text:#f7f1f2;
+    --muted:#b09a9f;
+    --a:#b3001b;
+    --b:#ff3b4e;
+    --c:#6e0014;
+    --r:32px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif;
+    min-height:100svh;overflow-x:hidden;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* ---------- background ---------- */
+  .bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+  .b1{width:60vmax;height:60vmax;background:var(--a);top:-20vmax;left:-15vmax;animation:drift1 22s ease-in-out infinite alternate}
+  .b2{width:50vmax;height:50vmax;background:var(--b);bottom:-18vmax;right:-14vmax;opacity:.38;animation:drift2 26s ease-in-out infinite alternate}
+  .b3{width:36vmax;height:36vmax;background:var(--c);top:35%;left:45%;opacity:.28;animation:drift3 30s ease-in-out infinite alternate}
+  @keyframes drift1{to{transform:translate(18vmax,12vmax) scale(1.15)}}
+  @keyframes drift2{to{transform:translate(-16vmax,-10vmax) scale(1.2)}}
+  @keyframes drift3{to{transform:translate(-22vmax,10vmax) scale(.8)}}
+  .grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 70%);
+  }
+  canvas#fx{position:absolute;inset:0;width:100%;height:100%}
+  .grain{position:absolute;inset:0;opacity:.07;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+  /* ---------- layout ---------- */
+  main{max-width:1180px;margin:0 auto;padding:clamp(16px,4vw,48px) 16px 64px}
+  header.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:clamp(8px,3vw,24px)}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 16px;border-radius:999px;font-size:.82rem;font-weight:600;letter-spacing:.02em;
+    background:var(--card);border:1px solid var(--stroke);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--b);box-shadow:0 0 12px var(--b);animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.35}}
+
+  .hero{position:relative;text-align:center;padding:clamp(12px,5vw,48px) 0 clamp(24px,6vw,56px)}
+  .hero h1{
+    font-size:clamp(7rem,38vw,24rem);
+    line-height:.78;font-weight:900;letter-spacing:-.07em;
+    background:linear-gradient(120deg,#fff 0%,#ffb3bb 30%,var(--b) 65%,var(--a) 100%);
+    background-size:200% 200%;animation:shine 9s ease-in-out infinite alternate;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 20px 60px rgba(220,20,60,.45));
+    user-select:none;
+  }
+  @keyframes shine{to{background-position:100% 100%}}
+  .hero p.name{margin-top:clamp(14px,3vw,28px);font-size:clamp(1.2rem,4.2vw,2.2rem);font-weight:700;letter-spacing:-.02em}
+  .hero p.sub{margin-top:6px;color:var(--muted);font-size:clamp(.95rem,2.6vw,1.1rem)}
+
+  .bento{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;perspective:1200px}
+  @media(min-width:760px){.bento{grid-template-columns:repeat(6,1fr);gap:18px}}
+
+  /* ---------- cards ---------- */
+  .card{
+    --mx:50%;--my:50%;--rx:0deg;--ry:0deg;
+    position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:20px;
+    min-height:190px;padding:24px;border-radius:var(--r);
+    color:inherit;text-decoration:none;overflow:hidden;
+    background:var(--card);border:1px solid var(--stroke);
+    backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+    transform:rotateX(var(--rx)) rotateY(var(--ry));
+    transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s;
+    box-shadow:0 20px 60px -20px rgba(0,0,0,.6);
+    cursor:pointer;touch-action:manipulation;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;
+    background:radial-gradient(420px circle at var(--mx) var(--my),rgba(255,255,255,.16),transparent 45%);
+  }
+  .card:hover::before,.card.active::before{opacity:1}
+  .card:hover,.card.active{border-color:rgba(255,255,255,.28);box-shadow:0 30px 80px -20px rgba(220,20,60,.5)}
+  .card:active{transform:scale(.98)}
+  .card.tilting{transition:transform .08s linear,border-color .25s,box-shadow .25s}
+  .card:focus-visible{outline:2px solid var(--b);outline-offset:3px}
+
+  .label{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .big{font-size:clamp(1.6rem,5vw,2.6rem);font-weight:800;letter-spacing:-.04em;line-height:1}
+  .small{color:var(--muted);font-size:.95rem;line-height:1.4}
+  .arrow{
+    position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;
+    display:grid;place-items:center;background:rgba(255,255,255,.1);font-size:1.1rem;
+    transition:transform .3s,background .3s;
+  }
+  .card:hover .arrow{transform:rotate(-45deg) scale(1.1);background:rgba(255,255,255,.2)}
+
+  /* sizes */
+  .c-about{grid-column:span 2}
+  .c-project{grid-column:span 2;min-height:260px;
+    background:linear-gradient(145deg,rgba(200,16,46,.55),rgba(110,0,20,.25)),var(--card)}
+  .c-height{grid-column:span 1}
+  .c-nick{grid-column:span 1}
+  .c-x{grid-column:span 1}
+  .c-mail{grid-column:span 2}
+  @media(min-width:760px){
+    .c-about{grid-column:span 4}
+    .c-project{grid-column:span 2;grid-row:span 2;min-height:0}
+    .c-height{grid-column:span 2}
+    .c-nick{grid-column:span 2}
+    .c-x{grid-column:span 2}
+    .c-mail{grid-column:span 4}
+  }
+
+  .c-about .big{font-size:clamp(1.9rem,6vw,3.4rem)}
+  .grad{background:linear-gradient(90deg,var(--b),var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .c-project .big{font-size:clamp(2rem,7vw,3.4rem)}
+  .c-project .orb{
+    position:absolute;right:-60px;bottom:-60px;width:220px;height:220px;border-radius:50%;
+    background:conic-gradient(from 0deg,var(--a),var(--b),var(--c),var(--a));filter:blur(34px);opacity:.6;
+    animation:spin 14s linear infinite;pointer-events:none;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* height ruler */
+  .ruler{display:flex;align-items:flex-end;gap:14px}
+  .ruler .num{font-size:clamp(2.6rem,9vw,4.4rem);font-weight:900;letter-spacing:-.06em;line-height:.85}
+  .ruler .num span{font-size:.38em;letter-spacing:0;color:var(--muted);margin-left:4px;font-weight:700}
+  .bar{flex:1;height:70px;border-radius:14px;position:relative;overflow:hidden;
+    background:repeating-linear-gradient(to top,rgba(255,255,255,.28) 0 1px,transparent 1px 7px);
+    border:1px solid var(--stroke)}
+  .bar i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(to top,var(--a),var(--b));opacity:.75;
+    transition:height 1.6s cubic-bezier(.2,.8,.2,1)}
+  .in .bar i{height:91.5%}
+
+  .toast{
+    position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));
+    transform:translate(-50%,40px);opacity:0;pointer-events:none;
+    padding:12px 20px;border-radius:999px;background:#fff;color:#0b0a14;font-weight:700;font-size:.9rem;
+    transition:.35s cubic-bezier(.2,.8,.2,1);z-index:10;
+  }
+  .toast.show{transform:translate(-50%,0);opacity:1}
+
+  footer{margin-top:40px;text-align:center;color:var(--muted);font-size:.85rem}
+
+  /* entrance */
+  .reveal{opacity:0;translate:0 28px;transition:opacity .8s ease,translate .8s cubic-bezier(.2,.8,.2,1)}
+  .in .reveal{opacity:1;translate:0 0}
+  .in .reveal:nth-child(2){transition-delay:.08s}
+  .in .reveal:nth-child(3){transition-delay:.16s}
+  .in .reveal:nth-child(4){transition-delay:.24s}
+  .in .reveal:nth-child(5){transition-delay:.32s}
+  .in .reveal:nth-child(6){transition-delay:.4s}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .reveal{opacity:1;translate:0 0}
+    .in .bar i{height:91.5%}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="grid"></div>
+  <canvas id="fx"></canvas>
+  <div class="grain"></div>
+</div>
+
+<main id="app">
+  <header class="top">
+    <span class="pill"><span class="dot"></span>vlad-popescu.com</span>
+  </header>
+
+  <section class="hero">
+    <h1>VP</h1>
+    <p class="name">Vlad Popescu</p>
+  </section>
+
+  <section class="bento">
+    <article class="card c-about reveal" tabindex="0">
+      <span class="label">About</span>
+      <div class="big">Just <span class="grad">Vlad.</span></div>
+    </article>
+
+    <a class="card c-project reveal" href="https://walar.xyz" target="_blank" rel="noopener">
+      <span class="orb"></span>
+      <span class="arrow">→</span>
+      <span class="label">Personal project</span>
+      <div style="position:relative">
+        <div class="big">walar.xyz</div>
+        <p class="small" style="margin-top:10px">Network</p>
+      </div>
+    </a>
+
+    <article class="card c-height reveal" tabindex="0">
+      <span class="label">Height</span>
+      <div class="ruler">
+        <div class="num">183<span>cm</span></div>
+        <div class="bar"><i></i></div>
+      </div>
+    </article>
+
+    <article class="card c-nick reveal" tabindex="0">
+      <span class="label">Nickname</span>
+      <div class="big grad" style="font-size:clamp(3rem,10vw,4.6rem);font-weight:900">VP</div>
+    </article>
+
+    <a class="card c-x reveal" href="https://x.com/VPopescu_" target="_blank" rel="noopener">
+      <span class="arrow">↗</span>
+      <span class="label">Find me on X</span>
+      <div>
+        <div class="big">𝕏</div>
+        <p class="small" style="margin-top:8px">@VPopescu_</p>
+      </div>
+    </a>
+
+    <button class="card c-mail reveal" id="mail" type="button" style="font:inherit;text-align:left;color:inherit">
+      <span class="arrow">⧉</span>
+      <span class="label">Contact · tap to copy</span>
+      <div>
+        <div class="big" style="font-size:clamp(1.3rem,4.6vw,2.4rem);word-break:break-all">contact@vlad-popescu.com</div>
+        <p class="small" style="margin-top:10px"><a href="mailto:contact@vlad-popescu.com" style="color:var(--b)" onclick="event.stopPropagation()">Open in mail</a></p>
+      </div>
+    </button>
+  </section>
+
+  <footer>© <span id="y"></span> Vlad Popescu</footer>
+</main>
+
+<div class="toast" id="toast" role="status">Email copied ✓</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('y').textContent = new Date().getFullYear();
+  requestAnimationFrame(() => setTimeout(() => document.getElementById('app').classList.add('in'), 60));
+
+  /* ---- card tilt + spotlight ---- */
+  document.querySelectorAll('.card').forEach(card => {
+    const move = e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--mx', x * 100 + '%');
+      card.style.setProperty('--my', y * 100 + '%');
+      if (!reduce) {
+        card.style.setProperty('--ry', ((x - .5) * 14).toFixed(2) + 'deg');
+        card.style.setProperty('--rx', ((.5 - y) * 14).toFixed(2) + 'deg');
+      }
+      card.classList.add('tilting', 'active');
+    };
+    const reset = () => {
+      card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg');
+      card.classList.remove('tilting', 'active');
+    };
+    card.addEventListener('pointermove', move);
+    card.addEventListener('pointerleave', reset);
+    card.addEventListener('pointercancel', reset);
+    card.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') reset(); });
+  });
+
+  /* ---- copy email ---- */
+  const toast = document.getElementById('toast');
+  document.getElementById('mail').addEventListener('click', async () => {
+    const mail = 'contact@vlad-popescu.com';
+    try { await navigator.clipboard.writeText(mail); toast.textContent = 'Email copied ✓'; }
+    catch { toast.textContent = mail; }
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1800);
+  });
+
+  /* ---- particle field ---- */
+  if (reduce) return;
+  const cv = document.getElementById('fx'), ctx = cv.getContext('2d');
+  let w, h, dpr, pts = [], mouse = { x: -999, y: -999 };
+  const init = () => {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    w = cv.width = innerWidth * dpr; h = cv.height = innerHeight * dpr;
+    const n = Math.min(110, Math.floor(innerWidth * innerHeight / 14000));
+    pts = Array.from({ length: n }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - .5) * .25 * dpr, vy: (Math.random() - .5) * .25 * dpr,
+      r: (Math.random() * 1.6 + .5) * dpr
+    }));
+  };
+  addEventListener('resize', init); init();
+  const setM = e => { const t = e.touches ? e.touches[0] : e; mouse.x = t.clientX * dpr; mouse.y = t.clientY * dpr; };
+  addEventListener('pointermove', setM);
+  addEventListener('touchmove', setM, { passive: true });
+  addEventListener('pointerleave', () => { mouse.x = mouse.y = -999; });
+
+  const link = 150 * (devicePixelRatio > 1 ? 1.3 : 1);
+  (function loop() {
+    ctx.clearRect(0, 0, w, h);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      const dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.hypot(dx, dy);
+      if (d < 160 * dpr) { p.x += dx / d * 1.2; p.y += dy / d * 1.2; }
+      ctx.fillStyle = 'rgba(255,255,255,.7)';
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+    }
+    for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+      const a = pts[i], b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < link * dpr * .8) {
+        ctx.strokeStyle = `rgba(255,70,90,${(1 - d / (link * dpr * .8)) * .35})`;
+        ctx.lineWidth = dpr * .8;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+    }
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
+</body>
+</html>
